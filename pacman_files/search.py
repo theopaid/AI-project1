@@ -81,22 +81,92 @@ def depthFirstSearch(problem):
 
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
-
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+
+    state = problem.getStartState()
+    if(problem.isGoalState(state)):
+        return []
+    frontier = util.Stack()
+    current_ListNode = [(state, 'Stop', 0)]
+    frontier.push(current_ListNode)
+    explored = set()
+    ActionsList = []
+    while(True):
+        if(frontier.isEmpty()):
+            return []
+        current_ListNode = frontier.pop()
+        explored.add(current_ListNode[-1][0])
+        for child in problem.getSuccessors(current_ListNode[-1][0]):
+            if(child[0] not in explored):
+                if(problem.isGoalState(child[0])):
+                    current_ListNode.append(child)
+                    for StepInPath in current_ListNode[1:]:
+                        ActionsList.append(StepInPath[1])
+                    return ActionsList
+                newListNode = current_ListNode[:]
+                newListNode.append(child)
+                frontier.push(newListNode)
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    state = problem.getStartState()
+    if(problem.isGoalState(state)):
+        return []
+    frontier = util.Queue()
+    current_ListNode = [(state, 'Stop', 0)]
+    frontier.push(current_ListNode)
+    explored = set()
+    ActionsList = []
+    while(True):
+        if(frontier.isEmpty()):
+            return []
+        current_ListNode = frontier.pop()
+        explored.add(current_ListNode[-1][0])
+        for child in problem.getSuccessors(current_ListNode[-1][0]):
+            if(child[0] not in explored):
+                if(problem.isGoalState(child[0])):
+                    current_ListNode.append(child)
+                    for StepInPath in current_ListNode[1:]:
+                        ActionsList.append(StepInPath[1])
+                    return ActionsList
+                newListNode = current_ListNode[:]
+                newListNode.append(child)
+                frontier.push(newListNode)
+
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    state = problem.getStartState()
+    frontier = util.PriorityQueue()
+    current_ListNode = [(state, 'Stop', 0)]
+    frontier.push(current_ListNode, 0)
+    explored = set()
+    ActionsList = []
+    while(True):
+        path_cost = 0
+        if(frontier.isEmpty()):
+            return []
+        current_ListNode = frontier.pop()
+        if(problem.isGoalState(current_ListNode[-1][0])):
+            for StepInPath in current_ListNode[1:]:
+                ActionsList.append(StepInPath[1])
+            return ActionsList
+        explored.add(current_ListNode[-1][0])
+        for child in problem.getSuccessors(current_ListNode[-1][0]):
+            if(child[0] not in explored or child[0] not in frontier):
+                newListNode = current_ListNode[:]
+                newListNode.append(child)
+                for StepInPath in newListNode[1:]:
+                    path_cost = path_cost + StepInPath[2]
+                frontier.push(child, path_cost)
+            else if(child[0] in frontier):
+                # find the same child andreplace it, then calculate the new path_cost, then update()
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
