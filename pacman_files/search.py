@@ -158,15 +158,18 @@ def uniformCostSearch(problem):
             return ActionsList
         explored.add(current_ListNode[-1][0])
         for child in problem.getSuccessors(current_ListNode[-1][0]):
-            if(child[0] not in explored or child[0] not in frontier):
+            if(child[0] not in explored):
                 newListNode = current_ListNode[:]
                 newListNode.append(child)
                 for StepInPath in newListNode[1:]:
                     path_cost = path_cost + StepInPath[2]
-                frontier.push(child, path_cost)
-            else if(child[0] in frontier):
+                frontier.push(newListNode, path_cost)
+            else :
+                for(ListNode in frontier):
+                    if(ListNode[-1][0] == child[0]):
+                        
                 # find the same child andreplace it, then calculate the new path_cost, then update()
-
+    return None
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
