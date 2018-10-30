@@ -97,33 +97,24 @@ def depthFirstSearch(problem):
     ActionsList = []
     while(True):
         if(frontier.isEmpty()):
-            print 'telos'
             return []
         current_DictNode = frontier.pop()
-        
         explored.add(current_DictNode['Last Node'])
-        print '--------------'
-        print current_DictNode
-        print current_DictNode['Last Node']
-        print problem.getSuccessors(current_DictNode['Last Node'])
         for child in problem.getSuccessors(current_DictNode['Last Node']):
             if(child[0] not in explored):
-                #print current_DictNode['Last Node']
-                print child[0]
                 if(problem.isGoalState(child[0])):
-                    print 'speraaa'
                     current_DictNode[child[0]] = (current_DictNode['Last Node'], child[1])
                     current_DictNode['Last Node'] = child[0]
                     tmpNode = current_DictNode[child[0]]
                     ActionsList.append(tmpNode[1])
                     while True:
-                        tmpNode = current_DictNode[tmpNode[0]]
-                        ActionsList.append(tmpNode[1])
                         if(tmpNode[0] == starting_state):
                             break
+                        tmpNode = current_DictNode[tmpNode[0]]
+                        ActionsList.append(tmpNode[1])
                     ActionsList.reverse()
                     return ActionsList
-                newDictNode = current_DictNode
+                newDictNode = current_DictNode.copy()
                 newDictNode[child[0]] = (newDictNode['Last Node'], child[1])
                 newDictNode['Last Node'] = child[0]
                 frontier.push(newDictNode)
@@ -133,29 +124,40 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     state = problem.getStartState()
+    starting_state = state
     if(problem.isGoalState(state)):
         return []
+    dictNode = {}
     frontier = util.Queue()
-    current_ListNode = [(state, 'Stop', 0)]
-    frontier.push(current_ListNode)
+    dictNode[state] = ('Stop', None)
+    dictNode['Last Node'] = state
+    frontier.push(dictNode)
     explored = set()
     ActionsList = []
     while(True):
         if(frontier.isEmpty()):
             return []
-        current_ListNode = frontier.pop()
-        explored.add(current_ListNode[-1][0])
-        for child in problem.getSuccessors(current_ListNode[-1][0]):
+        current_DictNode = frontier.pop()
+        explored.add(current_DictNode['Last Node'])
+        for child in problem.getSuccessors(current_DictNode['Last Node']):
             if(child[0] not in explored):
                 if(problem.isGoalState(child[0])):
-                    current_ListNode.append(child)
-                    for StepInPath in current_ListNode[1:]:
-                        ActionsList.append(StepInPath[1])
+                    current_DictNode[child[0]] = (
+                        current_DictNode['Last Node'], child[1])
+                    current_DictNode['Last Node'] = child[0]
+                    tmpNode = current_DictNode[child[0]]
+                    ActionsList.append(tmpNode[1])
+                    while True:
+                        if(tmpNode[0] == starting_state):
+                            break
+                        tmpNode = current_DictNode[tmpNode[0]]
+                        ActionsList.append(tmpNode[1])
+                    ActionsList.reverse()
                     return ActionsList
-                newListNode = current_ListNode[:]
-                newListNode.append(child)
-                frontier.push(newListNode)
-                print newListNode[-1]
+                newDictNode = current_DictNode.copy()
+                newDictNode[child[0]] = (newDictNode['Last Node'], child[1])
+                newDictNode['Last Node'] = child[0]
+                frontier.push(newDictNode)
 
     util.raiseNotDefined()
 
