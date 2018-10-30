@@ -85,28 +85,48 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
 
     state = problem.getStartState()
+    starting_state = state
     if(problem.isGoalState(state)):
         return []
+    dictNode = {}
     frontier = util.Stack()
-    current_ListNode = [(state, 'Stop', 0)]
-    frontier.push(current_ListNode)
+    dictNode[state] = ('Stop', None)
+    dictNode['Last Node'] = state
+    frontier.push(dictNode)
     explored = set()
     ActionsList = []
     while(True):
         if(frontier.isEmpty()):
+            print 'telos'
             return []
-        current_ListNode = frontier.pop()
-        explored.add(current_ListNode[-1][0])
-        for child in problem.getSuccessors(current_ListNode[-1][0]):
+        current_DictNode = frontier.pop()
+        
+        explored.add(current_DictNode['Last Node'])
+        print '--------------'
+        print current_DictNode
+        print current_DictNode['Last Node']
+        print problem.getSuccessors(current_DictNode['Last Node'])
+        for child in problem.getSuccessors(current_DictNode['Last Node']):
             if(child[0] not in explored):
+                #print current_DictNode['Last Node']
+                print child[0]
                 if(problem.isGoalState(child[0])):
-                    current_ListNode.append(child)
-                    for StepInPath in current_ListNode[1:]:
-                        ActionsList.append(StepInPath[1])
+                    print 'speraaa'
+                    current_DictNode[child[0]] = (current_DictNode['Last Node'], child[1])
+                    current_DictNode['Last Node'] = child[0]
+                    tmpNode = current_DictNode[child[0]]
+                    ActionsList.append(tmpNode[1])
+                    while True:
+                        tmpNode = current_DictNode[tmpNode[0]]
+                        ActionsList.append(tmpNode[1])
+                        if(tmpNode[0] == starting_state):
+                            break
+                    ActionsList.reverse()
                     return ActionsList
-                newListNode = current_ListNode[:]
-                newListNode.append(child)
-                frontier.push(newListNode)
+                newDictNode = current_DictNode
+                newDictNode[child[0]] = (newDictNode['Last Node'], child[1])
+                newDictNode['Last Node'] = child[0]
+                frontier.push(newDictNode)
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
@@ -135,6 +155,7 @@ def breadthFirstSearch(problem):
                 newListNode = current_ListNode[:]
                 newListNode.append(child)
                 frontier.push(newListNode)
+                print newListNode[-1]
 
     util.raiseNotDefined()
 
@@ -164,9 +185,9 @@ def uniformCostSearch(problem):
                 for StepInPath in newListNode[1:]:
                     path_cost = path_cost + StepInPath[2]
                 frontier.push(newListNode, path_cost)
-            else :
-                for(ListNode in frontier):
-                    if(ListNode[-1][0] == child[0]):
+            #else :
+            #    for(ListNode in frontier):
+            #        if(ListNode[-1][0] == child[0]):
                         
                 # find the same child andreplace it, then calculate the new path_cost, then update()
     return None
